@@ -5,6 +5,7 @@ import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents
 import com.lightbend.lagom.scaladsl.dns.DnsServiceLocatorComponents
 import com.lightbend.lagom.scaladsl.persistence.cassandra.CassandraPersistenceComponents
 import com.lightbend.lagom.scaladsl.server._
+import com.lightbend.lagom.scaladsl.server.status.MetricsServiceComponents
 import com.softwaremill.macwire._
 import play.api.libs.ws.ahc.AhcWSComponents
 
@@ -25,7 +26,10 @@ abstract class BazzarApplication(context: LagomApplicationContext)
     with AhcWSComponents {
 
   // Bind the service that this server provides
-  override lazy val lagomServer = serverFor[BazzarService](wire[BazzarServiceImpl])
+  override lazy val lagomServer = LagomServer.forServices(
+    bindService[BazzarService].to(wire[BazzarServiceImpl]),
+    metricsServiceBinding
+  )
 
   // Register the JSON serializer registry
   override lazy val jsonSerializerRegistry = BazzarSerializerRegistry
