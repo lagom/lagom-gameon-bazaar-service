@@ -28,11 +28,6 @@ trait BazzarService extends Service {
     */
   def useItem(id: String): ServiceCall[ItemMessage, Done]
 
-  /**
-    * This gets published to Kafka.
-    */
-  def itemsTopic(): Topic[ItemMessageChanged]
-
   override final def descriptor = {
     import Service._
     // @formatter:off
@@ -40,18 +35,6 @@ trait BazzarService extends Service {
       .withCalls(
         pathCall("/api/bazzar/:id", bazzar _),
         pathCall("/api/bazzar/:id", useItem _)
-      )
-      .withTopics(
-        topic(BazzarService.TOPIC_NAME, itemsTopic _)
-          // Kafka partitions messages, messages within the same partition will
-          // be delivered in order, to ensure that all messages for the same user
-          // go to the same partition (and hence are delivered in order with respect
-          // to that user), we configure a partition key strategy that extracts the
-          // name as the partition key.
-          .addProperty(
-            KafkaProperties.partitionKeyStrategy,
-            PartitionKeyStrategy[ItemMessageChanged](_.name)
-          )
       )
       .withAutoAcl(true)
     // @formatter:on
@@ -70,19 +53,4 @@ object ItemMessage {
     * This will be picked up by a Lagom implicit conversion from Play's JSON format to Lagom's message serializer.
     */
   implicit val format: Format[ItemMessage] = Json.format[ItemMessage]
-}
-
-/**
-  * The item message class used by the topic stream.
-  * Different than [[ItemMessage]], this message includes the name (id).
-  */
-case class ItemMessageChanged(name: String, message: String)
-
-object ItemMessageChanged {
-  /**
-    * Format for converting item messages to and from JSON.
-    *
-    * This will be picked up by a Lagom implicit conversion from Play's JSON format to Lagom's message serializer.
-    */
-  implicit val format: Format[ItemMessageChanged] = Json.format[ItemMessageChanged]
 }

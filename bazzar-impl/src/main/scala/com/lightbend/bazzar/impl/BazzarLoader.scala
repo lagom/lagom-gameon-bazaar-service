@@ -1,14 +1,13 @@
 package com.lightbend.bazzar.impl
 
+import com.lightbend.bazzar.api.BazzarService
 import com.lightbend.lagom.scaladsl.api.ServiceLocator
 import com.lightbend.lagom.scaladsl.api.ServiceLocator.NoServiceLocator
+import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents
 import com.lightbend.lagom.scaladsl.persistence.cassandra.CassandraPersistenceComponents
 import com.lightbend.lagom.scaladsl.server._
-import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents
-import play.api.libs.ws.ahc.AhcWSComponents
-import com.lightbend.bazzar.api.BazzarService
-import com.lightbend.lagom.scaladsl.broker.kafka.LagomKafkaComponents
 import com.softwaremill.macwire._
+import play.api.libs.ws.ahc.AhcWSComponents
 
 class BazzarLoader extends LagomApplicationLoader {
 
@@ -26,7 +25,6 @@ class BazzarLoader extends LagomApplicationLoader {
 abstract class BazzarApplication(context: LagomApplicationContext)
   extends LagomApplication(context)
     with CassandraPersistenceComponents
-    with LagomKafkaComponents
     with AhcWSComponents {
 
   // Bind the service that this server provides

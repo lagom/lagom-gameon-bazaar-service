@@ -22,7 +22,6 @@ lazy val `bazzar-impl` = (project in file("bazzar-impl"))
   .settings(
     libraryDependencies ++= Seq(
       lagomScaladslPersistenceCassandra,
-      lagomScaladslKafkaBroker,
       lagomScaladslTestKit,
       macwire,
       scalaTest
