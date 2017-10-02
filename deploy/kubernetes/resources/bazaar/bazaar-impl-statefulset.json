@@ -2,22 +2,22 @@
   "apiVersion": "apps/v1beta1",
   "kind": "StatefulSet",
   "metadata": {
-    "name": "bazzar"
+    "name": "bazaar"
   },
   "spec": {
-    "serviceName": "bazzar",
+    "serviceName": "bazaar",
     "replicas": 1,
     "template": {
       "metadata": {
         "labels": {
-          "app": "bazzar"
+          "app": "bazaar"
         }
       },
       "spec": {
         "containers": [
           {
-            "name": "bazzar",
-            "image": "registry.ng.bluemix.net/javaone/bazzar-impl:1.0-SNAPSHOT",
+            "name": "bazaar",
+            "image": "registry.ng.bluemix.net/javaone/bazaar-impl:1.0-SNAPSHOT",
             "imagePullPolicy": "Always",
             "ports": [
               {
@@ -36,7 +36,7 @@
               },
               {
                 "name": "APPLICATION_SECRET",
-                "value": "bazzar-application-secret"
+                "value": "bazaar-application-secret"
               },
               {
                 "name": "GAMEONSERVICE_BIND_PORT",
@@ -48,7 +48,7 @@
               },
               {
                 "name": "AKKA_ACTOR_SYSTEM_NAME",
-                "value": "bazzar-v1"
+                "value": "bazaar-v1"
               },
               {
                 "name": "AKKA_REMOTING_BIND_PORT",
@@ -56,11 +56,11 @@
               },
               {
                 "name": "AKKA_REMOTING_BIND_HOST",
-                "value": "$HOSTNAME.bazzar.default.svc.cluster.local"
+                "value": "$HOSTNAME.bazaar.default.svc.cluster.local"
               },
               {
                 "name": "AKKA_SEED_NODES",
-                "value": "bazzar-0.bazzar.default.svc.cluster.local:2551,bazzar-1.bazzar.default.svc.cluster.local:2551,gameon17s99-2.gameon17s99.default.svc.cluster.local:2551"
+                "value": "bazaar-0.bazaar.default.svc.cluster.local:2551,bazaar-1.bazaar.default.svc.cluster.local:2551,gameon17s99-2.gameon17s99.default.svc.cluster.local:2551"
               },
               {
                 "name": "POD_NAME",

@@ -3,9 +3,9 @@
   "kind": "Service",
   "metadata": {
     "labels": {
-      "app": "bazzar"
+      "app": "bazaar"
     },
-    "name": "bazzar"
+    "name": "bazaar"
   },
   "spec": {
     "clusterIP": "None",
@@ -18,7 +18,7 @@
       }
     ],
     "selector": {
-      "app": "bazzar"
+      "app": "bazaar"
     }
   }
 }

@@ -3,9 +3,9 @@
   "kind": "Service",
   "metadata": {
     "labels": {
-      "app": "bazzar"
+      "app": "bazaar"
     },
-    "name": "bazzar-akka-remoting"
+    "name": "bazaar-akka-remoting"
   },
   "spec": {
     "ports": [
@@ -16,7 +16,7 @@
       }
     ],
     "selector": {
-      "app": "bazzar"
+      "app": "bazaar"
     }
   }
 }

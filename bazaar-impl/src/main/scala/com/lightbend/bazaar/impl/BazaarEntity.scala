@@ -1,4 +1,4 @@
-package com.lightbend.bazzar.impl
+package com.lightbend.bazaar.impl
 
 import java.time.LocalDateTime
 
@@ -11,12 +11,12 @@ import play.api.libs.json.{Format, Json}
 import scala.collection.immutable.Seq
 
 /**
-  * This is an event sourced entity. It has a state, [[BazzarState]], which
-  * stores what the item is stored in the Bazzar should be (eg, "Toy").
+  * This is an event sourced entity. It has a state, [[BazaarState]], which
+  * stores what the item is stored in the Bazaar should be (eg, "Toy").
   *
   * Event sourced entities are interacted with by sending them commands. This
   * entity supports two commands, a [[UseItemMessage]] command, which is
-  * used to change the greeting, and a [[Bazzar]] command, which is a read
+  * used to change the greeting, and a [[Bazaar]] command, which is a read
   * only command which returns a greeting to the name specified by the command.
   *
   * Commands get translated to events, and it's the events that get persisted by
@@ -29,23 +29,23 @@ import scala.collection.immutable.Seq
   * This entity defines one event, the [[ItemMessageChanged]] event,
   * which is emitted when a [[UseItemMessage]] command is received.
   */
-class BazzarEntity extends PersistentEntity {
+class BazaarEntity extends PersistentEntity {
 
-  override type Command = BazzarCommand[_]
-  override type Event = BazzarEvent
-  override type State = BazzarState
+  override type Command = BazaarCommand[_]
+  override type Event = BazaarEvent
+  override type State = BazaarState
 
   /**
     * The initial state. This is used if there is no snapshotted state to be found.
     */
-  override def initialState: BazzarState = BazzarState("Pen", LocalDateTime.now.toString)
+  override def initialState: BazaarState = BazaarState("Pen", LocalDateTime.now.toString)
 
   /**
     * An entity can define different behaviours for different states, so the behaviour
     * is a function of the current state to a set of actions.
     */
   override def behavior: Behavior = {
-    case BazzarState(message, _) => Actions().onCommand[UseItemMessage, Done] {
+    case BazaarState(message, _) => Actions().onCommand[UseItemMessage, Done] {
 
       // Command handler for the UseItemMessage command
       case (UseItemMessage(newMessage), ctx, state) =>
@@ -58,13 +58,13 @@ class BazzarEntity extends PersistentEntity {
           ctx.reply(Done)
         }
 
-    }.onReadOnlyCommand[Bazzar, String] {
+    }.onReadOnlyCommand[Bazaar, String] {
 
-      // Command handler for the Bazzar command
-      case (Bazzar(name), ctx, state) =>
+      // Command handler for the Bazaar command
+      case (Bazaar(name), ctx, state) =>
         // Reply with a message built from the current message, and the name of
-        // the name of the bazzar item we are putting in.
-        ctx.reply(s"Bazzar currently contains: $message, $name!")
+        // the name of the bazaar item we are putting in.
+        ctx.reply(s"Bazaar currently contains: $message, $name!")
 
     }.onEvent {
 
@@ -72,7 +72,7 @@ class BazzarEntity extends PersistentEntity {
       case (ItemMessageChanged(newMessage), state) =>
         // We simply update the current state to use the greeting message from
         // the event.
-        BazzarState(newMessage, LocalDateTime.now().toString)
+        BazaarState(newMessage, LocalDateTime.now().toString)
 
     }
   }
@@ -81,11 +81,11 @@ class BazzarEntity extends PersistentEntity {
 /**
   * The current state held by the persistent entity.
   */
-case class BazzarState(message: String, timestamp: String)
+case class BazaarState(message: String, timestamp: String)
 
-object BazzarState {
+object BazaarState {
   /**
-    * Format for the bazzar state.
+    * Format for the bazaar state.
     *
     * Persisted entities get snapshotted every configured number of events. This
     * means the state gets stored to the database, so that when the entity gets
@@ -93,24 +93,24 @@ object BazzarState {
     * snapshot. Hence, a JSON format needs to be declared so that it can be
     * serialized and deserialized when storing to and from the database.
     */
-  implicit val format: Format[BazzarState] = Json.format
+  implicit val format: Format[BazaarState] = Json.format
 }
 
 /**
-  * This interface defines all the events that the BazzarEntity supports.
+  * This interface defines all the events that the BazaarEntity supports.
   */
-sealed trait BazzarEvent extends AggregateEvent[BazzarEvent] {
-  def aggregateTag = BazzarEvent.Tag
+sealed trait BazaarEvent extends AggregateEvent[BazaarEvent] {
+  def aggregateTag = BazaarEvent.Tag
 }
 
-object BazzarEvent {
-  val Tag = AggregateEventTag[BazzarEvent]
+object BazaarEvent {
+  val Tag = AggregateEventTag[BazaarEvent]
 }
 
 /**
   * An event that represents a change in greeting message.
   */
-case class ItemMessageChanged(message: String) extends BazzarEvent
+case class ItemMessageChanged(message: String) extends BazaarEvent
 
 object ItemMessageChanged {
 
@@ -124,9 +124,9 @@ object ItemMessageChanged {
 }
 
 /**
-  * This interface defines all the commands that the Bazzar entity supports.
+  * This interface defines all the commands that the Bazaar entity supports.
   */
-sealed trait BazzarCommand[R] extends ReplyType[R]
+sealed trait BazaarCommand[R] extends ReplyType[R]
 
 /**
   * A command to switch the greeting message.
@@ -134,7 +134,7 @@ sealed trait BazzarCommand[R] extends ReplyType[R]
   * It has a reply type of [[Done]], which is sent back to the caller
   * when all the events emitted by this command are successfully persisted.
   */
-case class UseItemMessage(message: String) extends BazzarCommand[Done]
+case class UseItemMessage(message: String) extends BazaarCommand[Done]
 
 object UseItemMessage {
 
@@ -151,17 +151,17 @@ object UseItemMessage {
 }
 
 /**
-  * A command to say bazzar to someone using the current greeting message.
+  * A command to say bazaar to someone using the current greeting message.
   *
   * The reply type is String, and will contain the message to say to that
   * person.
   */
-case class Bazzar(name: String) extends BazzarCommand[String]
+case class Bazaar(name: String) extends BazaarCommand[String]
 
-object Bazzar {
+object Bazaar {
 
   /**
-    * Format for the bazzar command.
+    * Format for the bazaar command.
     *
     * Persistent entities get sharded across the cluster. This means commands
     * may be sent over the network to the node where the entity lives if the
@@ -169,7 +169,7 @@ object Bazzar {
     * that, a JSON format needs to be declared so the command can be serialized
     * and deserialized.
     */
-  implicit val format: Format[Bazzar] = Json.format
+  implicit val format: Format[Bazaar] = Json.format
 }
 
 /**
@@ -181,11 +181,11 @@ object Bazzar {
   * The serializers are registered here, and then provided to Lagom in the
   * application loader.
   */
-object BazzarSerializerRegistry extends JsonSerializerRegistry {
+object BazaarSerializerRegistry extends JsonSerializerRegistry {
   override def serializers: Seq[JsonSerializer[_]] = Seq(
     JsonSerializer[UseItemMessage],
-    JsonSerializer[Bazzar],
+    JsonSerializer[Bazaar],
     JsonSerializer[ItemMessageChanged],
-    JsonSerializer[BazzarState]
+    JsonSerializer[BazaarState]
   )
 }
