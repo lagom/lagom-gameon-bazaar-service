@@ -8,18 +8,20 @@ import com.lightbend.lagom.scaladsl.persistence.PersistentEntityRegistry
   * Implementation of the BazaarService.
   */
 class BazaarServiceImpl(persistentEntityRegistry: PersistentEntityRegistry) extends BazaarService {
+  // Only one singleton instance
+  private val Id = "bazaar"
 
-  override def bazaar(id: String) = ServiceCall { _ =>
+  override def bazaar() = ServiceCall { _ =>
     // Look up the Bazaar entity for the given ID.
-    val ref = persistentEntityRegistry.refFor[BazaarEntity](id)
+    val ref = persistentEntityRegistry.refFor[BazaarEntity](Id)
 
     // Ask the entity the Bazaar command.
-    ref.ask(Bazaar(id))
+    ref.ask(Bazaar(Id))
   }
 
-  override def useItem(id: String) = ServiceCall { request =>
+  override def useItem() = ServiceCall { request =>
     // Look up the Bazaar entity for the given ID.
-    val ref = persistentEntityRegistry.refFor[BazaarEntity](id)
+    val ref = persistentEntityRegistry.refFor[BazaarEntity](Id)
 
     // Tell the entity to use the greeting message specified.
     ref.ask(UseItemMessage(request.message))

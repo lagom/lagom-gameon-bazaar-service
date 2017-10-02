@@ -64,7 +64,7 @@ class BazaarEntity extends PersistentEntity {
       case (Bazaar(name), ctx, state) =>
         // Reply with a message built from the current message, and the name of
         // the name of the bazaar item we are putting in.
-        ctx.reply(s"Bazaar currently contains: $message, $name!")
+        ctx.reply(message)
 
     }.onEvent {
 

@@ -17,22 +17,24 @@ object BazaarService  {
 trait BazaarService extends Service {
 
   /**
-    * Example: curl http://localhost:9000/api/bazaar/Toy
+    * Returns the item currently in the Bazaar.
+    * Example: curl http://localhost:9000/api/bazaar
     */
-  def bazaar(id: String): ServiceCall[NotUsed, String]
+  def bazaar(): ServiceCall[NotUsed, String]
 
   /**
-    * Example: curl -H "Content-Type: application/json" -X POST -d '{"message": "Bazaar"}' http://localhost:9000/api/bazaar/Toy
+    * Changes the item currently in the Bazaar.
+    * Example: curl -H "Content-Type: application/json" -X POST -d '{"message": "Toy"}' http://localhost:9000/api/bazaar
     */
-  def useItem(id: String): ServiceCall[ItemMessage, Done]
+  def useItem(): ServiceCall[ItemMessage, Done]
 
   override final def descriptor = {
     import Service._
     // @formatter:off
     named("bazaar")
       .withCalls(
-        pathCall("/api/bazaar/:id", bazaar _),
-        pathCall("/api/bazaar/:id", useItem _)
+        pathCall("/api/bazaar", bazaar _),
+        pathCall("/api/bazaar", useItem _)
       )
       .withAutoAcl(true)
     // @formatter:on
