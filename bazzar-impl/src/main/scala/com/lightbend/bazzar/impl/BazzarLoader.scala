@@ -1,9 +1,8 @@
 package com.lightbend.bazzar.impl
 
 import com.lightbend.bazzar.api.BazzarService
-import com.lightbend.lagom.scaladsl.api.ServiceLocator
-import com.lightbend.lagom.scaladsl.api.ServiceLocator.NoServiceLocator
 import com.lightbend.lagom.scaladsl.devmode.LagomDevModeComponents
+import com.lightbend.lagom.scaladsl.dns.DnsServiceLocatorComponents
 import com.lightbend.lagom.scaladsl.persistence.cassandra.CassandraPersistenceComponents
 import com.lightbend.lagom.scaladsl.server._
 import com.softwaremill.macwire._
@@ -12,9 +11,7 @@ import play.api.libs.ws.ahc.AhcWSComponents
 class BazzarLoader extends LagomApplicationLoader {
 
   override def load(context: LagomApplicationContext): LagomApplication =
-    new BazzarApplication(context) {
-      override def serviceLocator: ServiceLocator = NoServiceLocator
-    }
+    new BazzarApplication(context) with DnsServiceLocatorComponents
 
   override def loadDevMode(context: LagomApplicationContext): LagomApplication =
     new BazzarApplication(context) with LagomDevModeComponents
